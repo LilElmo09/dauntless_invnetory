@@ -1,29 +1,21 @@
-import index
+from tabulate import tabulate
+import reader
+# Leer el archivo CSV
+raw_inventory = reader.read_csv_to_dict('inventario.csv')
+
+# convertir el formato del inventario
+inventory = []
+keys = raw_inventory.keys()
+for i in range(len(next(iter(raw_inventory.values())))):
+    item = {key: raw_inventory[key][i] for key in keys}
+    inventory.append(item)
 
 def view_inventory():
-    print("Inventory:")
-    for item in index.inventory:
-        print(item)
+    if not inventory:
+        print("No items in inventory.")
+        return
+    
+    headers = inventory[0].keys() if inventory else []
+    table = [item.values() for item in inventory]
+    print(tabulate(table, headers=headers, tablefmt='grid'))
 
-def add_inventory():
-    item = input("Enter the item to add: ")
-    index.inventory.append(item)
-    print(f"Item '{item}' added.")
-
-def edit_inventory():
-    item = input("Enter the item to edit: ")
-    if item in index.inventory:
-        new_item = input("Enter the new value: ")
-        index = index.inventory.index(item)
-        index.inventory[index] = new_item
-        print(f"Item '{item}' updated to '{new_item}'.")
-    else:
-        print(f"Item '{item}' not found.")
-
-def delete_inventory():
-    item = input("Enter the item to delete: ")
-    if item in index.inventory:
-        index.inventory.remove(item)
-        print(f"Item '{item}' deleted.")
-    else:
-        print(f"Item '{item}' not found.")
